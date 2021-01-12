@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Pisici drăgălașe din grupa IE13</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style type="text/css">
+    	.below-image {
+			border: 1px solid grey;
+			border-top: none;
+			padding: .4rem;
+			font-style: italic;
+			font-family: sans-serif;
+			font-size: 20px;
+			font-weight: 100;
+    	}
+
+    	.inline {
+    		display: inline-block;
+    	}
+
+    	.pointer {
+    		cursor: pointer;
+    	}
+
+    	.italic {
+    		font-style: italic;
+    	}
+
+    	.far.fa-heart:hover {
+    		color: green;
+    	}
+
+    	.far.fa-heart:active {
+    		color: purple;
+    	}
+
+    	.col {
+    		margin-top: 1rem;
+    	}
+
+    </style>
+</head>
+<body>
+
+	<div class="container" id="app">
+		<h4 class="inline">Gogoșici</h4>
+
+		<div class="btn purple darken-2 inline right waves-effect modal-trigger" 
+			style="margin-top:2rem"
+			data-target="posteaza">Postează gogoșică</div>
+
+		<div class="divider" style="margin-top: 1rem; margin-bottom: 1rem"></div>
+
+
+		<!--- modal --->
+		  <div id="posteaza" class="modal">
+		    <div class="modal-content">
+		      <h4>Încarcă fișier</h4>
+		      <i>Stai chill, nu pe moodle :D</i>
+
+		      <div class="divider" style="margin-top: 1rem; margin-bottom: 1rem"></div>
+
+			  <div class="row">
+			    <div class="input-field col s12 m6 tooltipped"
+			    	data-tooltip="Cum îi spune pisicuței?"
+			    	data-position="top"
+			    >
+			      <input id="first_name2" type="text" class="validate" v-model="kitten_name">
+			      <label class="active" for="first_name2">Cum îi zice?</label>
+			    </div>
+			    <div class="file-field input-field col s12 m6 tooltipped"
+			    	data-tooltip="Poate fi video MP4 sau imagine JPEG/JPG/PNG"
+			    >
+			      <div class="btn">
+			        <span>Video/poză</span>
+			        <input type="file" 
+			        		accept=".jpg,.png,.jpeg,.mp4" 
+			        		id="kittenMedia">
+			      </div>
+			      <div class="file-path-wrapper">
+			        <input class="file-path validate" 
+			        		type="text"
+			        		id="kittenMediaLabel">
+			      </div>
+			    </div>
+			    <div class="col">
+			    	<div class="btn green waves-effect darken-1" 
+			    		@click="postKitten()">postează gogoșicaa 😸</div>
+			    </div>
+			  </div>
+
+
+
+		    </div>
+		    <div class="modal-footer">
+		      <a class="modal-close waves-effect waves-green btn-flat">Anulează</a>
+		    </div>
+		  </div>
+		<!---  -->
+
+
+		<!--- PC ---->
+		<div class="row hide-on-small-only">
+			<div v-for="(item, index) in allKittens" class="col">
+				<img v-if="item.fname.indexOf('mp4') < 0" 
+					:src="`/uploads/${item.fname}`" 
+					width="320" 
+					class="materialboxed"
+				>
+				<video v-else 
+						class="responsive-video" 
+						autoplay="" 
+						loop=""
+				>
+					<source :src="`/uploads/${item.fname}`" >
+				</video>
+				<div class="below-image">
+					<div class="inline italic tooltipped " data-tooltip="o cheamă.." >{{ item.name }}</div>
+					<div class="inline right">
+						<i v-if="myLikes.includes(item.fname)" class="fas fa-heart red-text"></i>
+						<i v-else 
+							class="far fa-heart tooltipped pointer" 
+							data-tooltip="îmi place e cuute!"
+							@click="iLikedTheKittiee(item.fname)" ></i>
+						<span class="tooltipped" 
+								data-tooltip="mămoși" 
+								data-position="right">{{ item.likes }}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<!--- mobile --->
+		<div class="row hide-on-med-and-up">
+			<div v-for="(item, index) in allKittens" class="col">
+				<img v-if="item.fname.indexOf('mp4') < 0" 
+					:src="`/uploads/${item.fname}`" 
+					class="materialboxed responsive-img"
+				>
+				<video v-else 
+						class="responsive-video" 
+						autoplay="" 
+						loop=""
+				>
+					<source :src="`/uploads/${item.fname}`" >
+				</video>
+				<div class="below-image">
+					<div class="inline italic tooltipped " data-tooltip="o cheamă.." >{{ item.name }}</div>
+					<div class="inline right">
+						<i v-if="myLikes.includes(item.fname)" class="fas fa-heart red-text"></i>
+						<i v-else 
+							class="far fa-heart tooltipped pointer" 
+							data-tooltip="îmi place e cuute!"
+							@click="iLikedTheKittiee(item.fname)" ></i>
+						<span class="tooltipped" 
+								data-tooltip="mămoși" 
+								data-position="right">{{ item.likes }}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="text/javascript" src="https://vuejs.org/js/vue.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script type="text/javascript">
+
+    //
+	const Socket = io()
+
+	const _ = function(el){
+		return document.getElementById(el)
+	}
+
+	const toast = function(m){
+		return M.toast({ html: m})
+	}
+
+
+	//// init vue app
+	const App = new Vue({
+		el: '#app',
+
+		data(){
+			return{
+				kitten_name: '',
+				Modal: null,
+				allKittens: [],
+				myLikes: [],
+			}
+		},
+
+		methods:{
+			postKitten(){
+				if(this.kitten_name && _('kittenMedia').files.length > 0)
+				{
+					let Form = new FormData
+						Form.append('kitten_name', this.kitten_name)
+						Form.append('kitten_media', _('kittenMedia').files[0])
+
+
+					Socket.emit('post_kitten_send', {
+						kitten_name: this.kitten_name,
+						kitten_data: _('kittenMedia').files[0],
+					})
+
+					Socket.on('post_kitten_reply', r=>{
+						if(r.success)
+						{
+							this.Modal.close()
+							toast('Pisic postat cu success! 😸')
+						}
+						else
+							toast(r.message ? r.message : 'A avut loc o eroare! :(')
+
+						Socket.removeListener('post_kitten_reply')
+					})
+				}
+				else
+					toast('Te rog completează atât numele cât și imaginea/vidul cu pisica!')
+			},
+
+			iLikedTheKittiee(fname){
+				this.myLikes.push(fname)
+				Socket.emit('liked_kitty', fname)
+			}
+		},
+
+		// autoload
+		mounted() {
+			// materializecss
+    		this.Modal = M.Modal.init(_('posteaza'), {
+    			onCloseEnd:()=>{
+    				this.kitten_name = ''
+    				_('kittenMedia').value = null
+    				_('kittenMediaLabel').value = null
+    			}
+    		})
+
+    		M.Materialbox.init(document.querySelectorAll('.materialboxed'))
+    		M.Tooltip.init(document.querySelectorAll('.tooltipped'))
+
+			/// autoplay vids
+			let clicked = false
+			document.addEventListener('click', e=>
+			{
+				if(clicked)
+					return
+
+	    		document.querySelectorAll('video').forEach(item=>{
+	    			item.play()
+	    			item.loop = true
+	    		})
+
+	    		clicked = true
+			})
+
+			// socketio stuff
+			Socket.on('disconnect', ()=>{
+				toast('Ai fost deconectat de la server. Fii sigur că nu încarci un fișier prea mare..')
+			})
+
+			Socket.on('connect', ()=>{
+				toast('Ai fost conectat la server! :)')
+			})
+
+			Socket.on('new_kitten', data=>{
+				this.allKittens.push(data)
+			})
+
+			Socket.on('kitten_liked', data=>{
+				this.allKittens
+					.find(item=>item.fname === data)
+					.likes++
+			})
+
+			Socket.on('all_kittens', data=> this.allKittens = data)
+		},
+
+		watch:{
+			allKittens:{
+				deep: true,
+				handler(){
+					this.$nextTick(()=>{
+			    		M.Materialbox.init(document.querySelectorAll('.materialboxed'))
+			    		M.Tooltip.init(document.querySelectorAll('.tooltipped'))
+					})
+				}
+			}
+		}
+	})
+    </script>
+</body>
+</html>
